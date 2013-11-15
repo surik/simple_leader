@@ -14,6 +14,8 @@
          terminate/2,
          code_change/3]).
 
+-export([monitor1/1]). % for correct code update
+
 -define(T, 300).
 -define(PING, ping).
 -define(PONG, pong).
@@ -186,10 +188,10 @@ monitor1(#state{timeout = Timeout} = State) ->
         _Info -> lager:warning("monitor: ~p", [_Info]), State
     after 4 * Timeout ->
         lager:debug("~p disappear. New election.", [State#state.leader]),
-        new_election(),
+        ?MODULE:new_election(),
         State
     end,
-    monitor1(NewState).
+    ?MODULE:monitor1(NewState).
 
 
 -spec monitor_set_state(#state{}) -> #state{}.
